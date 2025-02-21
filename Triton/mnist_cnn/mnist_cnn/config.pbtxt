@@ -1,0 +1,36 @@
+name: "mnist_cnn"
+platform: "onnxruntime_onnx"
+backend: "onnxruntime"
+max_batch_size: 16   
+input [
+  {
+    name: "input.1"
+    data_type: TYPE_FP32
+    dims: [ 1, 28, 28 ]    
+  }
+]
+output [
+  {
+    name: "19"
+    data_type: TYPE_FP32
+    dims: [ 10 ]            
+  }
+]
+instance_group [
+  {
+    kind: KIND_GPU  
+    count: 2  # Chạy 2 instance song song trên GPU
+  }
+]
+version_policy: {
+    all {
+    }
+}
+dynamic_batching {         
+    preferred_batch_size: [4, 8, 16]  
+    max_queue_delay_microseconds: 5000
+}
+optimization {
+  input_pinned_memory { enable: true }
+  output_pinned_memory { enable: true }
+}
